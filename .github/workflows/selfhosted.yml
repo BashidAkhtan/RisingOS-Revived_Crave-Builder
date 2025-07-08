@@ -265,7 +265,6 @@ jobs:
         cd "$PROJECTFOLDER"
 
         jq '.projects = []' ~/crave.conf > tmp && mv tmp ~/crave.conf
-        export CLEAN="--clean"
 
         if [[ -n "${{ secrets.PAID }}" ]]; then
            echo "Paid Build... Tokens will be consumed."
@@ -277,7 +276,8 @@ jobs:
         echo "Running build's log will show up here!"
 
 
-        crave ${{ secrets.CRAVE_FLAGS }} run --no-patch ${PAID} ${CLEAN} -- "rm -rf .repo/local_manifests/ ${{ github.event.inputs.REMOVALS }} && \
+        crave ${{ secrets.CRAVE_FLAGS }} run --no-patch ${PAID} --clean -- "rm -rf .repo/local_manifests/ && \
+        $REPO_INIT ; \
         # Sync the repositories
         if [ -f /usr/bin/resync ]; then
           /usr/bin/resync # For compatibility with Omansh's Docker image
